@@ -8,15 +8,10 @@
 
 import Foundation
 
-class Item {
+class Item : Codable {
 
-    var title : String
-    var done : Bool
-    
-    init() {
-        title = ""
-        done = false
-    }
+    var title : String = ""
+    var done : Bool = false
     
     init(titleInput : String, doneInput : Bool) {
         self.title = titleInput
