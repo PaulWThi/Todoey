@@ -9,7 +9,7 @@
 import UIKit
 import RealmSwift
 
-class ToDoListViewController: UITableViewController {
+class ToDoListViewController: SwipeTableViewController {
 
     // Can add through Main.storyboard
 //    @IBOutlet weak var searchBar: UISearchBar!
@@ -25,8 +25,7 @@ class ToDoListViewController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-//        searchBar.delegate = self
+        tableView.rowHeight = 60.0
     }
     
     // MARK: - Tableview Datasource Methods
@@ -35,7 +34,8 @@ class ToDoListViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "ToDoItemCell", for: indexPath)
+
+        let cell = super.tableView(tableView, cellForRowAt: indexPath)
         
         if let item = items?[indexPath.row] {
             cell.textLabel?.text = item.title
@@ -53,8 +53,6 @@ class ToDoListViewController: UITableViewController {
         if let item = items?[indexPath.row] {
             do {
                 try realm.write {
-                    // Deletes from realm
-//                    realm.delete(item)
                     item.done = !item.done
                 }
             } catch {
@@ -116,17 +114,6 @@ class ToDoListViewController: UITableViewController {
     }
     
     // MARK: - Model Manipulation Methods
-//    func saveItems() {
-//
-//        do {
-//            try context.save()
-//        } catch {
-//            print("error saving context \(error)")
-//        }
-//
-//        self.tableView.reloadData()
-//
-//    }
     
     func loadItems() {
 
@@ -134,6 +121,19 @@ class ToDoListViewController: UITableViewController {
 
         tableView.reloadData()
 
+    }
+    
+    override func updateModel(at indexPath: IndexPath) {
+        if let item = items?[indexPath.row] {
+            do {
+                try realm.write {
+                    realm.delete(item)
+                }
+            } catch {
+                print("error saving item \(error)")
+            }
+//            tableView.reloadData()
+        }
     }
     
 }
